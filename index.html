@@ -1,0 +1,799 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+CGPA Calculator
+</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    background:linear-gradient(
+    135deg,
+    #0f172a,
+    #1d4ed8,
+    #2563eb
+    );
+
+    min-height:100vh;
+
+    color:white;
+
+    overflow-x:hidden;
+}
+
+/* FRONT PAGE */
+
+.front-page{
+
+    width:100%;
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.front-card{
+
+    width:500px;
+
+    padding:50px;
+
+    border-radius:25px;
+
+    text-align:center;
+
+    background:rgba(255,255,255,0.1);
+
+    backdrop-filter:blur(15px);
+
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+
+    animation:floating 3s infinite ease-in-out;
+}
+
+@keyframes floating{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-15px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+}
+
+.front-card h1{
+
+    font-size:50px;
+
+    margin-bottom:20px;
+}
+
+.front-card p{
+
+    font-size:20px;
+
+    margin-bottom:30px;
+}
+
+.enter-btn{
+
+    padding:15px 40px;
+
+    border:none;
+
+    border-radius:50px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.enter-btn:hover{
+
+    transform:scale(1.1);
+}
+
+/* MAIN PAGE */
+
+.main-page{
+
+    display:none;
+
+    padding:40px;
+
+    animation:slide 1s ease;
+}
+
+@keyframes slide{
+
+    from{
+
+        transform:translateX(100%);
+        opacity:0;
+    }
+
+    to{
+
+        transform:translateX(0);
+        opacity:1;
+    }
+}
+
+.title{
+
+    text-align:center;
+
+    margin-bottom:30px;
+}
+
+.title h1{
+
+    font-size:45px;
+}
+
+/* SEMESTER */
+
+.semester{
+
+    background:rgba(255,255,255,0.1);
+
+    padding:25px;
+
+    border-radius:20px;
+
+    margin-bottom:30px;
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:0 8px 25px rgba(0,0,0,0.3);
+}
+
+.semester-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+/* TABLE */
+
+.table-container{
+
+    overflow-x:auto;
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:10px;
+}
+
+th,td{
+
+    border:1px solid rgba(255,255,255,0.2);
+
+    padding:10px;
+
+    text-align:center;
+}
+
+th{
+
+    background:#1e3a8a;
+}
+
+input,select{
+
+    width:100%;
+
+    padding:8px;
+
+    border:none;
+
+    border-radius:8px;
+
+    outline:none;
+}
+
+/* BUTTONS */
+
+button{
+
+    border:none;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.add-btn{
+
+    background:#22c55e;
+
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+}
+
+.add-btn:hover{
+
+    background:#16a34a;
+}
+
+.calculate-btn{
+
+    width:100%;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:22px;
+
+    margin-top:20px;
+}
+
+.calculate-btn:hover{
+
+    background:#1d4ed8;
+}
+
+.delete-btn{
+
+    background:red;
+
+    color:white;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+}
+
+.edit-btn{
+
+    background:orange;
+
+    color:white;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+}
+
+/* RESULTS */
+
+.results{
+
+    background:rgba(255,255,255,0.1);
+
+    padding:30px;
+
+    border-radius:20px;
+
+    margin-top:30px;
+}
+
+.result-box{
+
+    background:rgba(255,255,255,0.08);
+
+    padding:20px;
+
+    border-radius:15px;
+
+    margin-bottom:20px;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .front-card{
+
+        width:90%;
+    }
+
+    table{
+
+        font-size:12px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- FRONT PAGE -->
+
+<div class="front-page"
+id="frontPage">
+
+    <div class="front-card">
+
+        <h1>
+         CGPA Calculator
+        </h1>
+
+        <p>
+            Semester Wise SGPA & CGPA Calculator
+        </p>
+
+        <button class="enter-btn"
+        onclick="enterApp()">
+
+            Enter
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN PAGE -->
+
+<div class="main-page"
+id="mainPage">
+
+    <div class="title">
+
+        <h1>
+         CGPA Calculator
+        </h1>
+
+    </div>
+
+    <!-- ADD SEMESTER BUTTON -->
+
+    <div style="text-align:center; margin-bottom:30px;">
+
+        <button class="add-btn"
+        onclick="addSemester()">
+
+            + Add Semester
+
+        </button>
+
+    </div>
+
+    <div id="semesterContainer"></div>
+
+    <button class="calculate-btn"
+    onclick="calculateCGPA()">
+
+        Calculate CGPA
+
+    </button>
+
+    <!-- RESULTS -->
+
+    <div class="results">
+
+        <h1>
+            Results
+        </h1>
+
+        <br>
+
+        <div id="semesterResults"></div>
+
+        <h1 id="cgpaResult"></h1>
+
+        <br>
+
+        <h1 id="percentageResult"></h1>
+
+    </div>
+
+</div>
+
+<script>
+
+function enterApp(){
+
+    document.getElementById(
+    "frontPage"
+    ).style.display="none";
+
+    document.getElementById(
+    "mainPage"
+    ).style.display="block";
+}
+
+/* SEMESTER COUNT */
+
+let semesterCount = 0;
+
+/* ADD SEMESTER */
+
+function addSemester(){
+
+    semesterCount++;
+
+    createSemester(semesterCount);
+}
+
+/* CREATE SEMESTER */
+
+function createSemester(num){
+
+    let semester =
+    document.createElement("div");
+
+    semester.classList.add(
+    "semester"
+    );
+
+    semester.id =
+    "semester"+num;
+
+    semester.innerHTML = `
+
+        <div class="semester-header">
+
+            <h2>
+                Semester ${num}
+            </h2>
+
+            <button class="add-btn"
+            onclick="addRow(${num})">
+
+                + Add Row
+
+            </button>
+
+        </div>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>S.No</th>
+                        <th>Sub Code</th>
+                        <th>Sub Name</th>
+                        <th>Internals</th>
+                        <th>Grade</th>
+                        <th>Credits</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="tbody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+    document.getElementById(
+    "semesterContainer"
+    ).appendChild(semester);
+
+    addRow(num);
+}
+
+/* ADD ROW */
+
+function addRow(semesterNo){
+
+    let tbody =
+    document.querySelector(
+    "#semester"+semesterNo+" .tbody"
+    );
+
+    let rowCount =
+    tbody.rows.length + 1;
+
+    let row =
+    document.createElement("tr");
+
+    row.innerHTML = `
+
+        <td>${rowCount}</td>
+
+        <td>
+
+            <input type="text"
+            placeholder="Code">
+
+        </td>
+
+        <td>
+
+            <input type="text"
+            placeholder="Subject Name">
+
+        </td>
+
+        <td>
+
+            <input type="number"
+            placeholder="Internals">
+
+        </td>
+
+        <td>
+
+            <select>
+
+                <option value="">
+                    Grade
+                </option>
+
+                <option value="10">S</option>
+                <option value="9">A</option>
+                <option value="8">B</option>
+                <option value="7">C</option>
+                <option value="6">D</option>
+                <option value="5">E</option>
+                <option value="0">F</option>
+
+            </select>
+
+        </td>
+
+        <td>
+
+            <input type="number"
+            placeholder="Credits">
+
+        </td>
+
+        <td>
+
+            <button class="edit-btn"
+            onclick="editRow(this)">
+
+                Edit
+
+            </button>
+
+        </td>
+
+        <td>
+
+            <button class="delete-btn"
+            onclick="deleteRow(this)">
+
+                Delete
+
+            </button>
+
+        </td>
+
+    `;
+
+    tbody.appendChild(row);
+}
+
+/* DELETE */
+
+function deleteRow(btn){
+
+    btn.parentElement
+    .parentElement.remove();
+}
+
+/* EDIT */
+
+function editRow(btn){
+
+    let row =
+    btn.parentElement
+    .parentElement;
+
+    let fields =
+    row.querySelectorAll(
+    "input,select"
+    );
+
+    fields.forEach(field=>{
+
+        field.disabled =
+        !field.disabled;
+    });
+
+    if(btn.innerText==="Edit"){
+
+        btn.innerText="Save";
+    }
+
+    else{
+
+        btn.innerText="Edit";
+    }
+}
+
+/* CALCULATE */
+
+function calculateCGPA(){
+
+    let semesters =
+    document.querySelectorAll(
+    ".semester"
+    );
+
+    let totalCredits = 0;
+
+    let totalPoints = 0;
+
+    let resultHTML = "";
+
+    semesters.forEach((semester,index)=>{
+
+        let rows =
+        semester.querySelectorAll(
+        "tbody tr"
+        );
+
+        let semCredits = 0;
+
+        let semPoints = 0;
+
+        rows.forEach(row=>{
+
+            let grade =
+            parseFloat(
+            row.cells[4]
+            .querySelector("select")
+            .value
+            );
+
+            let credit =
+            parseFloat(
+            row.cells[5]
+            .querySelector("input")
+            .value
+            );
+
+            if(
+                !isNaN(grade) &&
+                !isNaN(credit)
+            ){
+
+                semPoints +=
+                grade * credit;
+
+                semCredits +=
+                credit;
+            }
+        });
+
+        let sgpa = 0;
+
+        if(semCredits>0){
+
+            sgpa =
+            semPoints /
+            semCredits;
+        }
+
+        let percentage =
+        (sgpa * 9.5)
+        .toFixed(2);
+
+        resultHTML += `
+
+            <div class="result-box">
+
+                <h2>
+                    Semester ${index+1}
+                </h2>
+
+                <br>
+
+                <p>
+                    SGPA :
+                    ${sgpa.toFixed(2)}
+                </p>
+
+                <br>
+
+                <p>
+                    Percentage :
+                    ${percentage}%
+                </p>
+
+            </div>
+
+        `;
+
+        totalCredits +=
+        semCredits;
+
+        totalPoints +=
+        semPoints;
+    });
+
+    let cgpa = 0;
+
+    if(totalCredits>0){
+
+        cgpa =
+        totalPoints /
+        totalCredits;
+    }
+
+    let overallPercentage =
+    (cgpa * 9.5)
+    .toFixed(2);
+
+    document.getElementById(
+    "semesterResults"
+    ).innerHTML =
+    resultHTML;
+
+    document.getElementById(
+    "cgpaResult"
+    ).innerHTML =
+
+    "Overall CGPA : " +
+    cgpa.toFixed(2);
+
+    document.getElementById(
+    "percentageResult"
+    ).innerHTML =
+
+    "Overall Percentage : " +
+    overallPercentage + "%";
+}
+
+</script>
+
+</body>
+
+</html>
+```
